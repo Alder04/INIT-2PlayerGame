@@ -1,0 +1,155 @@
+/*******************************************************************************
+
+Author: Nandan Uppalapati
+06-09-2021
+Description: This is a game where the player plays against the computer.
+The aim of the game is to choose an element that defeats the computer's element.
+
+Sources:
+    My dad: Helped with algorithms on lines 141, 146.
+
+*******************************************************************************/
+#include <iostream> //The library necessary for inputs and outputs
+#include <time.h>   // The library necessary to use srand
+
+using namespace std;
+
+void instructions ();   //The function that outputs instructions for the player
+void rounds (int &);    //The function that allows the player to enter the valid number of rounds they want to play best of
+void compChoice (int &);//The function that generates a random computer choice
+void input (int &);     //The function that allows the user to input a valid choice
+void battle (int &, int &, int &, int &, int &);    //The function that determines the winner of the round and the points
+
+
+
+int main ()
+{
+    int iPlayerChoice, iCompChoice, iPlayerPoints = 0, iCompPoints = 0; //The variables for points and choices
+    int iRounds;    //The variable for number of rounds
+    int iEnd = 0;   //The variable to check if both players chose Earth
+    srand (time (NULL));    //The srand function for randomly generating a computer choice
+
+    //Call for instructions function
+    instructions ();
+
+    //Call for round selection function
+    rounds (iRounds);
+
+    //While function that runs until someone wins or loses
+    while (iEnd == 0 && iPlayerPoints < iRounds && iCompPoints < iRounds)
+    {
+        input (iPlayerChoice);      //Function call for inputs
+        compChoice (iCompChoice);   //Function call for random computer choice
+        cout << "Your Choice: " << iPlayerChoice << "\t Computer Choice: " << iCompChoice << "\n\n";
+        battle (iPlayerChoice, iCompChoice, iPlayerPoints, iCompPoints, iEnd);  //Function call for battle
+        cout << "Your Points: " << iPlayerPoints << "\t Computer Points: " << iCompPoints << "\n\n\n\n\n";
+    }
+
+    //If statement that outputs the winner
+    if (iEnd == 1)
+        cout << "Both you and the computer chose the Earth, you both have perished";    //Both lose
+    else if (iPlayerPoints == iRounds)
+        cout << "Congratulations, you won.";        //Player wins
+    else if (iCompPoints == iRounds)
+        cout << "Unfortunately, you were defeated"; //Computer wins
+
+
+
+    return 0;
+}
+
+
+//Outputs instructions
+void instructions ()
+{
+    cout << "Welcome to the Element Game. Today, you will be playing against the computer.\n";
+    cout << "The instructions are simple: You will choose your element and battle the computer.\n\n";
+    cout << "Fire consumes the Wind. Wind evaporates the Water. Water quenches the Fire. Earth defeats ALL.\n";
+    cout << "But be wary, if your opponent also chooses earth, both will PERISH.\n\n";
+}
+
+
+//Player chooses number of rounds
+void rounds (int &iRounds)
+{
+    cout << "Would you like to play best of 3 rounds or 5 rounds: ";
+    cin >> iRounds;
+    while (iRounds != 3 && iRounds != 5)
+    {
+    cout << "Please enter the number 3 or the number 5: ";
+    cin >> iRounds;
+    }
+    cout << "\n";
+    if (iRounds == 3)
+        iRounds = 2;
+    else
+    iRounds = 3;
+}
+
+
+//Player inputs choice
+void input (int &iPlayerChoice)
+{
+    cout << "Enter the number corresponding to your choice:\t 1. Fire\t 2. Wind\t 3. Water\t 4. Earth\n";
+    cout << "Your choice: ";
+    cin >> iPlayerChoice;
+    cout << "\n";
+    
+    while (iPlayerChoice < 1 || iPlayerChoice > 4)
+    {
+        cout << "Invalid choice. Please choose 1, 2, 3, or 4: ";
+        cin >> iPlayerChoice;
+    }
+    
+    if (iPlayerChoice == 4)
+    {
+    cout << "Be wary. If your opponent also summons the power of the Earth, both of you will perish.\n";
+    cout << "You have one chance to reconsider: ";
+    cin >> iPlayerChoice;
+    cout << "\n";
+    }
+    
+    cout << "\n";
+}
+
+
+//Random function
+void compChoice (int &i1)
+{
+    i1 = rand () % 4 + 1;
+}
+
+
+//Determines winner
+void battle (int &iPlayerChoice, int &iCompChoice, int &iPlayerPoints, int &iCompPoints, int &iEnd)
+{
+    if (iCompChoice == 4 && iPlayerChoice != 4) //I used if instead of switch because if is shorter than a switch with if's in each case segment
+    {
+        iCompPoints++;
+        cout << "The opponent wins this round\n\n";
+    }
+    else if (iCompChoice != 4 && iPlayerPoints == 4)
+    {
+        iPlayerPoints++;
+        cout << "You win this round\n\n";
+    }
+    else if (iCompChoice == 4 && iPlayerChoice == 4)
+    {
+        iEnd = 1;
+        cout << "You and your opponent summoned the Earth. This is the end.\n";
+    }
+    else if (iCompChoice == iPlayerChoice + 1 || iCompChoice == iPlayerChoice - 2)
+    {
+        iPlayerPoints++;
+        cout << "You win this round\n\n";
+    }
+    else if (iCompChoice == iPlayerChoice - 1 || iCompChoice == iPlayerChoice + 2)
+    {
+        iCompPoints++;
+        cout << "The computer wins this round\n";
+    }
+    else
+    {
+        cout << "Draw\n";
+    }
+}
